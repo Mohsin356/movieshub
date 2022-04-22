@@ -5,6 +5,7 @@ class ColorAssets{
   static const appBarClr =Colors.red;
   static const starIconClr=Colors.yellow;
   static const linkTxtClr =Colors.red;
+  static const circularIndicatorClr =Colors.red;
 }
 class FontSizes{
   static const titleSize= 15.0;

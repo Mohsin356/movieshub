@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:movieshub/assets/assets.dart';
 import 'package:movieshub/requests.dart';
@@ -40,7 +39,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    Requests.fetchData();
   }
   @override
   Widget build(context) {
@@ -54,77 +52,112 @@ class _MyHomePageState extends State<MyHomePage> {
           body: SafeArea(
             child:Container(
             margin: const EdgeInsets.all(10.0),
-            child: ListView.builder(
-                itemCount: Requests.data.length,
-                itemBuilder: (BuildContext context,index){
-                return Card(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        leading: Image.network(
-                          Requests.imageUrl+Requests.data[index]['poster_path'],
-                          fit: BoxFit.contain,
+            child: FutureBuilder<String>(
+            future: Requests.fetchData(), // a previously-obtained Future<String> or null
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              // print(snapshot.connectionState);
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(ColorAssets.circularIndicatorClr)),);
+              } else if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return const Text('Error');
+                } else if (snapshot.hasData) {
+                  return Flexible(
+                     fit: FlexFit.loose,
+                    child: GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 3,
                         ),
-                        title: TextWidget(
-                          txt: Requests.data[index]['title'],
-                          txtWeight: FontWeight.bold,
-                          txtSize: FontSizes.titleSize,
-                        ),
-                        subtitle: Column(
-                          children: [
-                            Row(
-                              children: <Widget>[
-                                const TextWidget(txt: "Language :",
-                                txtWeight: FontWeight.bold,),
-                                TextWidget(txt:Requests.data[index]["original_language"],
-                                  txtWeight: FontWeight.bold,),
-                              ],
+                        itemCount: Requests.data.length,
+                        itemBuilder: (BuildContext context, index) {
+                          return 
+                            Card(
+                            child: 
+                            SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    leading: Image.network(
+                                      Requests.imageUrl +
+                                          Requests.data[index]['poster_path'],
+                                      fit: BoxFit.contain,
+                                    ),
+                                    title: TextWidget(
+                                      txt: Requests.data[index]['title'],
+                                      txtWeight: FontWeight.bold,
+                                      txtSize: FontSizes.titleSize,
+                                    ),
+                                    subtitle: Column(
+                                      children: [
+                                        Row(
+                                          children: <Widget>[
+                                            const TextWidget(txt: "Language :",
+                                              txtWeight: FontWeight.bold,),
+                                            TextWidget(txt: Requests
+                                                .data[index]["original_language"],
+                                              txtWeight: FontWeight.bold,),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: <Widget>[
+                                            const TextWidget(txt: "Vote :",
+                                              txtWeight: FontWeight.bold,),
+                                            TextWidget(
+                                              txt: Requests
+                                                  .data[index]["vote_average"]
+                                                  .toString(),
+                                              txtWeight: FontWeight.bold,),
+                                            const Icon(
+                                              Icons.star,
+                                              size: IconSizes.starSize,
+                                              color: ColorAssets.starIconClr,
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: <Widget>[
+                                            const TextWidget(txt: "Popular :",
+                                              txtWeight: FontWeight.bold,),
+                                            TextWidget(
+                                              txt: Requests
+                                                  .data[index]["popularity"]
+                                                  .toString(),
+                                              txtWeight: FontWeight.bold,),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  ButtonBar(
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        onTap: () {},
+                                        child: const Text(
+                                          'Details', style: TextStyle(
+                                            color: ColorAssets.linkTxtClr),),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                            Row(
-                              children: <Widget>[
-                                const TextWidget(txt: "Vote :",
-                                  txtWeight: FontWeight.bold,),
-                                TextWidget(txt:Requests.data[index]["vote_average"].toString(),
-                                  txtWeight: FontWeight.bold,),
-                                const Icon(
-                                  Icons.star,
-                                  size: IconSizes.starSize,
-                                  color: ColorAssets.starIconClr,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-                                const TextWidget(txt: "Popular :",
-                                  txtWeight: FontWeight.bold,),
-                                TextWidget(txt:Requests.data[index]["popularity"].toString(),
-                                  txtWeight: FontWeight.bold,),
-                              ],
-
-                            ),
-                          ],
-                        ),
-
-                        ),
-                      ButtonBar(
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap:(){},
-                            child: const Text('Details',style: TextStyle(color: ColorAssets.linkTxtClr),),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-            }),
-
+                          );
+                        }),
+                  );
+                } else {
+                  return const Text('Empty data');
+                }
+              } else {
+                return Text('State: ${snapshot.connectionState}');
+              }
+            },
+        )
           )
           ),
       ),
     );
-
-
   }
 }
