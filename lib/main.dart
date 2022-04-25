@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
       debugShowCheckedModeBanner: false,
       title: 'MoviesHub',
       home: Scaffold(
-          appBar: AppBar(title: const Center(child:Text('MoviesHub'),),
+          appBar: AppBar(title: const Center(child:Text('MoviesBox'),),
             backgroundColor: ColorAssets.appBarClr,),
           backgroundColor:ColorAssets.appBg ,
           body: SafeArea(
@@ -63,90 +63,79 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (snapshot.hasError) {
                   return const Text('Error');
                 } else if (snapshot.hasData) {
-                  return Flexible(
-                     fit: FlexFit.loose,
-                    child: GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: 3,
+                  return LayoutBuilder(builder: (context, constraints) {
+                    return
+                    GridView.builder(
+                        gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: constraints.maxWidth > 700 ? 3 : 1,
+                          childAspectRatio:constraints.maxWidth > 700 ? 2: 5,
                         ),
                         itemCount: Requests.data.length,
                         itemBuilder: (BuildContext context, index) {
-                          return 
+                          return
                             Card(
-                            child: 
-                            SingleChildScrollView(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ListTile(
-                                    leading: Image.network(
-                                      Requests.imageUrl +
-                                          Requests.data[index]['poster_path'],
-                                      fit: BoxFit.contain,
-                                    ),
-                                    title: TextWidget(
-                                      txt: Requests.data[index]['title'],
-                                      txtWeight: FontWeight.bold,
-                                      txtSize: FontSizes.titleSize,
-                                    ),
-                                    subtitle: Column(
-                                      children: [
-                                        Row(
-                                          children: <Widget>[
-                                            const TextWidget(txt: "Language :",
-                                              txtWeight: FontWeight.bold,),
-                                            TextWidget(txt: Requests
-                                                .data[index]["original_language"],
-                                              txtWeight: FontWeight.bold,),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            const TextWidget(txt: "Vote :",
-                                              txtWeight: FontWeight.bold,),
-                                            TextWidget(
-                                              txt: Requests
-                                                  .data[index]["vote_average"]
-                                                  .toString(),
-                                              txtWeight: FontWeight.bold,),
-                                            const Icon(
-                                              Icons.star,
-                                              size: IconSizes.starSize,
-                                              color: ColorAssets.starIconClr,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            const TextWidget(txt: "Popular :",
-                                              txtWeight: FontWeight.bold,),
-                                            TextWidget(
-                                              txt: Requests
-                                                  .data[index]["popularity"]
-                                                  .toString(),
-                                              txtWeight: FontWeight.bold,),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  ButtonBar(
-                                    children: <Widget>[
-                                      GestureDetector(
-                                        onTap: () {},
-                                        child: const Text(
-                                          'Details', style: TextStyle(
-                                            color: ColorAssets.linkTxtClr),),
+                              child:
+                              SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      leading: Image.network(
+                                        Requests.imageUrl +
+                                            Requests.data[index]['poster_path'],
+                                        fit: BoxFit.contain,
                                       ),
-                                    ],
-                                  ),
-                                ],
+                                      title: TextWidget(
+                                        txt: Requests.data[index]['title'],
+                                        txtWeight: FontWeight.bold,
+                                      ),
+                                      subtitle: Column(
+                                        children: [
+                                          Row(
+                                            children: <Widget>[
+                                              const TextWidget(
+                                                txt: "Language :",
+                                                txtWeight: FontWeight.bold,),
+                                              TextWidget(txt: Requests
+                                                  .data[index]["original_language"],
+                                                txtWeight: FontWeight.bold,),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: <Widget>[
+                                              const TextWidget(txt: "Vote :",
+                                                txtWeight: FontWeight.bold,),
+                                              TextWidget(
+                                                txt: Requests
+                                                    .data[index]["vote_average"]
+                                                    .toString(),
+                                                txtWeight: FontWeight.bold,),
+                                              const Icon(
+                                                Icons.star,
+                                                color: ColorAssets.starIconClr,
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: <Widget>[
+                                              const TextWidget(txt: "Popular :",
+                                                txtWeight: FontWeight.bold,),
+                                              TextWidget(
+                                                txt: Requests
+                                                    .data[index]["popularity"]
+                                                    .toString(),
+                                                txtWeight: FontWeight.bold,),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        }),
-                  );
+                            );
+                        });
+                  });
                 } else {
                   return const Text('Empty data');
                 }

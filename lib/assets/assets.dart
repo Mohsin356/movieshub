@@ -7,9 +7,9 @@ class ColorAssets{
   static const linkTxtClr =Colors.red;
   static const circularIndicatorClr =Colors.red;
 }
-class FontSizes{
-  static const titleSize= 15.0;
-}
-class IconSizes{
-  static const starSize=15.0;
-}
+// class FontSizes{
+//   // static const titleSize= 15.0;
+// }
+// class IconSizes{
+//   static const starSize=15.0;
+// }
